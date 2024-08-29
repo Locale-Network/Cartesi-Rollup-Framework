@@ -1,4 +1,3 @@
-
 group "default" {
   targets = ["server", "console"]
 }
@@ -54,5 +53,3 @@ target "machine" {
     fs = "target:fs"
   }
 }
-
-
