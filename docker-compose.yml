@@ -63,7 +63,7 @@ services:
       TX_CHAIN_ID: 31337
       TX_CHAIN_IS_LEGACY: ${TX_LEGACY:-false}
       TX_DEFAULT_CONFIRMATIONS: 2
-      REDIS_ENDPOINT: redis://redis:6379
+      REDIS_ENDPOINT: redis://redis:6380
     volumes:
       - blockchain-data:/opt/cartesi/share/deployments:ro
       - ./deployments:/deployments:ro
@@ -109,7 +109,7 @@ services:
       RUST_LOG: info
       SERVER_MANAGER_ENDPOINT: http://server_manager:5001
       SESSION_ID: default_rollups_id
-      REDIS_ENDPOINT: redis://redis:6379
+      REDIS_ENDPOINT: redis://redis:6380
       CHAIN_ID: 31337
       DAPP_CONTRACT_ADDRESS_FILE: /deployments/localhost/dapp.json
       SNAPSHOT_DIR: /var/opt/cartesi/machine-snapshots
@@ -214,7 +214,7 @@ services:
     environment:
       <<: *postgres-config
       RUST_LOG: info
-      REDIS_ENDPOINT: redis://redis:6379
+      REDIS_ENDPOINT: redis://redis:6380
       CHAIN_ID: 31337
       DAPP_CONTRACT_ADDRESS_FILE: /deployments/localhost/dapp.json
     volumes:
@@ -250,7 +250,7 @@ services:
   redis:
     image: redis:6-alpine
     ports:
-      - 6379:6379
+      - 6380:6379
     restart: always
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]

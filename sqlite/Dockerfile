@@ -4,7 +4,7 @@ FROM --platform=linux/riscv64 cartesi/python:3.10-slim-jammy
 # installs required sqlite libs
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    sqlite3=3.37.2-2ubuntu0.1 \
+    sqlite3 \
     && rm -rf /var/lib/apt/lists/* \
     && find /var/log \( -name '*.log' -o -name '*.log.*' \) -exec truncate -s 0 {} \; \
     && truncate -s 0 /var/cache/ldconfig/aux-cache
