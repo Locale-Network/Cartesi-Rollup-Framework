@@ -70,7 +70,7 @@ function Borrow() {
         <button type="submit" disabled={isLoading}>Submit Loan Request</button>
       </form>
       <button onClick={approveLoanRequest} disabled={isLoading}>Approve Loan Request</button>
-      <p>{status}</p>
+      {status && <p>{status}</p>}
     </div>
   );
 }
