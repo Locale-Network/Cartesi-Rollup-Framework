@@ -1,19 +1,52 @@
-import React, { useState } from "react";
-import { ethers } from "ethers";
+import React, { useState } from 'react';
+import { ethers } from 'ethers';
 import contractABI from '../abi/LocaleLending.abi.json';
-import { useAuthContext } from "../providers/authProvider";
+import AccordionSidebar from '../components/AccordionSidebar';
+import PreQualificationForm from '../components/PreQualificationForm';
+import BusinessInformation from '../components/BusinessInformation';
+import IndividualInformation from '../components/IndividualInformation';
+import { FaArrowRightLong } from "react-icons/fa6";
+import CurrentLoans from '../components/CurrentLoans';
+import CashFlowVerification from '../components/CashFlowVerification';
 
 function Borrow() {
-  const { walletAddress } = useAuthContext();
-  const [amount, setAmount] = useState("");
-  const [status, setStatus] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [amount] = useState('');
+  const [status, setStatus] = useState('');
+  const [, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState('Pre Qualification');
+
+  const steps = [
+    {
+      title: 'Pre-Qualification',
+      items: [{ name: 'Pre Qualification', completed: true }],
+    },
+    {
+      title: 'Application',
+      items: [
+        { name: 'Business Information', completed: true },
+        { name: 'Individual Information', completed: true },
+        { name: 'Identity Verification', completed: false },
+        { name: 'Cash Flow Verification', completed: false },
+        { name: 'Current Loans', completed: false },
+        { name: 'Product and Service', completed: false },
+        { name: 'Market Opportunity', completed: false },
+        { name: 'Business Model', completed: false },
+        { name: 'Execution', completed: false },
+        { name: 'Document Uploads', completed: false },
+        { name: 'LaunchKC Fit', completed: false },
+      ],
+    },
+    {
+      title: 'Review and Sign',
+      items: [{ name: 'Review and Sign', completed: false }],
+    },
+  ];
 
   const submitLoanRequest = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     if (!amount) {
-      setStatus("Please enter an amount");
+      setStatus('Please enter an amount');
       return;
     }
     try {
@@ -24,52 +57,35 @@ function Borrow() {
       const tx = await contract.submitLoanRequest(ethers.parseEther(amount), 5, Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60);
       await tx.wait();
 
-      setStatus("Loan request submitted");
+      setStatus('Loan request submitted');
     } catch (error) {
-      console.error("Error submitting loan request:", error);
-      setStatus("Loan already exist");
+      console.error('Error submitting loan request:', error);
+      setStatus('Loan already exist');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const approveLoanRequest = async () => {
-    try {
-      setIsLoading(true);
-      const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_RPC_URL);
-      const signer = new ethers.Wallet(process.env.REACT_APP_WALLET_PRIVATE_KEY, provider);
-      const contract = new ethers.Contract(process.env.REACT_APP_CONTRACT_ADDRESS, contractABI, signer);
-      
-      const tx = await contract.approveLoanRequest(walletAddress);
-      await tx.wait();
-      
-      setStatus("Loan request approved");
-    } catch (error) {
-      console.error("Error approving loan request:", error.message || error);
-      setStatus("Loan already approved");
-    } finally {
-      setIsLoading(false);
-    }
-  };  
-
   return (
-    <div className="borrow">
+    <div className='borrow'>
       <h1>Borrow</h1>
-      {/* <h2>Credit Lines</h2> */}
-      {/* <p>You do not have any credit lines. To borrow funds from the pool, you need a LocaleLending credit line.</p> */}
-      <form onSubmit={submitLoanRequest}>
-        <div>
-          <label>Amount:</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" disabled={isLoading}>Submit Loan Request</button>
-      </form>
-      <button onClick={approveLoanRequest} disabled={isLoading}>Approve Loan Request</button>
+      <div className='borrow-container'>
+        <AccordionSidebar steps={steps} setCurrentStep={setCurrentStep}/>
+        <form onSubmit={submitLoanRequest}>
+          <div className="progress-container">
+            <div className="progress-bar" style={{ width: '30%' }}></div>
+            <span className="progress-text">30%</span>
+          </div>
+
+          {currentStep === 'Pre Qualification' && <PreQualificationForm />}
+          {currentStep === 'Business Information' && <BusinessInformation />}
+          {currentStep === 'Individual Information' && <IndividualInformation />}
+          {currentStep === 'Cash Flow Verification' && <CashFlowVerification />}
+          {currentStep === 'Current Loans' && <CurrentLoans />}
+
+          <div className='btn'>Next<FaArrowRightLong /></div>
+        </form>
+      </div>
       {status && <p>{status}</p>}
     </div>
   );
