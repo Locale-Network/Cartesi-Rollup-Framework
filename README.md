@@ -1,14 +1,4 @@
-# Cartesi Rollups example for LocalLending
+# JavaScript DApp Template
 
-## how to run cartesi rollup machine
-### cd sqlite
-docker buildx bake --load
-
-### running
-docker compose -f ../docker-compose.yml -f ./docker-compose.override.yml up
-
-### shut down
-docker compose -f ../docker-compose.yml -f ./docker-compose.override.yml down -v
-
-### run in host mode
-docker compose -f ../docker-compose.yml -f ./docker-compose.override.yml -f ../docker-compose-host.yml up
+This is a template for JavaScript Cartesi DApps. It uses node to execute the backend application.
+The application entrypoint is the `src/index.js` file. It is bundled with [esbuild](https://esbuild.github.io), but any bundler can be used.
